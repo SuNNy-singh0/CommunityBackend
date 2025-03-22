@@ -1,5 +1,8 @@
 package chat.controller;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import chat.config.JwtUtil;
 import chat.enitity.Login;
+import chat.enitity.UserDetail;
 import chat.repository.LoginRepository;
+import chat.repository.UserDetailRepository;
 
 @RestController
 @RequestMapping("/rooms")
@@ -15,6 +20,8 @@ import chat.repository.LoginRepository;
 public class LoginController {
     @Autowired
     private LoginRepository loginRepository;
+    @Autowired
+    private UserDetailRepository userRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -71,6 +78,18 @@ public class LoginController {
             // Encode the password before saving
             newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             loginRepository.save(newUser);
+            UserDetail userdetail = new UserDetail();
+            userdetail.setName(newUser.getUsername()); // Foreign key
+            userdetail.setResumeUrl(""); // Default empty values
+            userdetail.setProfilePicUrl("");
+            userdetail.setLastContest("");
+            userdetail.setMonthlyPerformance(0);
+            userdetail.setLinkedin("");
+            userdetail.setGithub("");
+            userdetail.setDescription("");
+            userdetail.setSkills(new ArrayList<>());
+            userdetail.setDate(LocalDate.now());
+            userRepository.save(userdetail);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating user");
