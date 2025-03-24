@@ -76,4 +76,5 @@ public class JobPostController {
         List<JobPost> jobs = jobPostRepository.findByDateBetween(startDate, endDate);
         return ResponseEntity.ok(jobs);
     }
+    
 }

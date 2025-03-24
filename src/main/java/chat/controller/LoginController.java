@@ -83,12 +83,12 @@ public class LoginController {
             userdetail.setResumeUrl(""); // Default empty values
             userdetail.setProfilePicUrl("");
             userdetail.setLastContest("");
-            userdetail.setMonthlyPerformance(0);
+            userdetail.setMonthlyPerformance(new ArrayList<>());
             userdetail.setLinkedin("");
             userdetail.setGithub("");
             userdetail.setDescription("");
             userdetail.setSkills(new ArrayList<>());
-            userdetail.setDate(LocalDate.now());
+            userdetail.setDate(LocalDate.now().minusDays(1));
             userRepository.save(userdetail);
             return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully!");
         } catch (Exception e) {
