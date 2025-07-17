@@ -35,10 +35,10 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**", "/community/records").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**", "/community/records", "/event/all").permitAll()
+            	    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+            	    .anyRequest().authenticated()
+            	)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
