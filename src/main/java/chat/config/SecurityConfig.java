@@ -35,13 +35,16 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-            	    .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**", "/community/records", "/event/all").permitAll()
+            	    .requestMatchers(
+            	        "/rooms/login", 
+            	        "/rooms/createUser", 
+            	        "/rooms/checkUsername/**", 
+            	        "/community/records", 
+            	        "/event/all" // <--- ✅ Add this line
+            	    ).permitAll()
             	    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
             	    .anyRequest().authenticated()
             	)
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
