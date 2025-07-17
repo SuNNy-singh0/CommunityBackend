@@ -36,11 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getRequestURI();
             
-            // Skip authentication for non-protected endpoints
-            if (!path.startsWith("/community") || 
-                path.contains("/login") || 
-                path.contains("/createUser") || 
-                path.contains("/checkUsername")) {
+            // Skip authentication for public endpoints
+            if (path.startsWith("/rooms/login") || 
+                path.startsWith("/rooms/createUser") || 
+                path.startsWith("/rooms/checkUsername") || 
+                path.startsWith("/community/records")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 logger.warn("No valid authorization header found. Please include 'Authorization: Bearer your_token' header");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.getWriter().write("Missing or invalid Authorization header. Please include 'Authorization: Bearer your_token'");
                 return;
             }
@@ -80,7 +80,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     response.getWriter().write("Invalid or expired token");
                 }
             } else {
-                filterChain.doFilter(request, response);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("Authentication failed");
             }
         } catch (Exception e) {
             logger.error("Error processing JWT token: {}", e.getMessage());

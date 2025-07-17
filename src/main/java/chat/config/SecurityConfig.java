@@ -36,10 +36,8 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**").permitAll()
-                .requestMatchers("/community/records").permitAll()
-                .requestMatchers("/community/join").authenticated()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -54,7 +52,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // ✅ Correct way: Use setAllowedOrigins() to allow multiple domains
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://asliengineers.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://asliengineers.vercel.app", "https://www.asliengineers.com"));
 
         configuration.addAllowedMethod("*"); // Allows GET, POST, PUT, DELETE, etc.
         configuration.addAllowedHeader("*"); // Allows all headers
