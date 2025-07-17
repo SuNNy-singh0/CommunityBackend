@@ -15,9 +15,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -35,16 +34,12 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-            	    .requestMatchers(
-            	        "/rooms/login", 
-            	        "/rooms/createUser", 
-            	        "/rooms/checkUsername/**", 
-            	        "/community/records", 
-            	        "/event/all" // <--- ✅ Add this line
-            	    ).permitAll()
-            	    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-            	    .anyRequest().authenticated()
-            	)
+                .requestMatchers("/rooms/login").authenticated()
+                .anyRequest().permitAll()
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -53,13 +48,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // ✅ Correct way: Use setAllowedOrigins() to allow multiple domains
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://asliengineers.vercel.app", "https://www.asliengineers.com"));
-
-        configuration.addAllowedMethod("*"); // Allows GET, POST, PUT, DELETE, etc.
-        configuration.addAllowedHeader("*"); // Allows all headers
-        configuration.setAllowCredentials(true); // Allow authentication cookies
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://asliengineers.vercel.app",
+            "https://www.asliengineers.com"
+        ));
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -75,4 +71,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-} 
+}

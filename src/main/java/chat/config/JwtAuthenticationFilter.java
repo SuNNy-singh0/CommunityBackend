@@ -32,15 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
+
         try {
             String path = request.getRequestURI();
-            
-            // Skip authentication for public endpoints
-            if (path.startsWith("/rooms/login") || 
-                path.startsWith("/rooms/createUser") || 
-                path.startsWith("/rooms/checkUsername") || 
-                path.startsWith("/community/records")) {
+
+            // ✅ Skip filter for everything EXCEPT /rooms/login
+            if (!path.startsWith("/rooms/login")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -63,13 +60,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (loginRepository.findByUsername(username) != null && jwtUtil.validateToken(jwt)) {
                     UserDetails userDetails = org.springframework.security.core.userdetails.User
                         .withUsername(username)
-                        .password("") // Password not needed here as we're authenticating via JWT
+                        .password("")
                         .authorities(new ArrayList<>())
                         .build();
 
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                    
+
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                     logger.debug("Authentication successful for user: {}", username);
@@ -89,4 +86,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("Error processing token: " + e.getMessage());
         }
     }
-} 
+}
+  
