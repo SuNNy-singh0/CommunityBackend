@@ -35,7 +35,7 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**").permitAll()
+                                .requestMatchers("/rooms/login", "/rooms/createUser", "/rooms/checkUsername/**", "/community/records").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
             )
