@@ -21,7 +21,7 @@ import chat.repository.RoomRepository;
 import chat.service.S3StorageService;
 
 @Controller
-@CrossOrigin(origins = {"http://localhost:5173", "https://asliengineers.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:5173", "https://asliengineers.vercel.app","https://asliengineers.com"})
 public class ChatController {
 	private final RoomRepository repo;
 	private final S3StorageService storageService;

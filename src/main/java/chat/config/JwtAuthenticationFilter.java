@@ -34,18 +34,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
-            // Permit all requests, as per SecurityConfig
-            filterChain.doFilter(request, response);
-            return;
+            String path = request.getRequestURI();
 
+            // ✅ Skip JWT check for public endpoints
+            if (path.startsWith("/rooms/login") ||
+                path.startsWith("/rooms/createUser") ||
+                path.startsWith("/rooms/reset-password") ||
+                path.startsWith("/rooms/alluser") ||
+                path.startsWith("/event/all") ||
+                path.startsWith("/contests/all") ||
+                path.startsWith("/community/records") ||
+                path.startsWith("/jobs/all") ||
+                path.startsWith("/jobs/find-by-skills") ||
+                path.startsWith("/jobs/filter-by-date") ||
+                path.startsWith("/mcq/all") ||
+                path.startsWith("/mcq/daily") ||
+                path.startsWith("/usercontrol/top-users") ||
+                path.startsWith("/usercontrol/user-rank") ||
+                path.startsWith("/usercontrol/user-pics") ||
+                path.startsWith("/usercontrol/") && request.getMethod().equals("GET")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             final String authHeader = request.getHeader("Authorization");
             logger.debug("Auth header: {}", authHeader);
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                logger.warn("No valid authorization header found. Please include 'Authorization: Bearer your_token' header");
+                logger.warn("No valid authorization header found.");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Missing or invalid Authorization header. Please include 'Authorization: Bearer your_token'");
+                response.getWriter().write("Missing or invalid Authorization header.");
                 return;
             }
 
@@ -57,25 +75,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (loginRepository.findByUsername(username) != null && jwtUtil.validateToken(jwt)) {
                     UserDetails userDetails = org.springframework.security.core.userdetails.User
                         .withUsername(username)
-                        .password("")
+                        .password("") // Password not needed here
                         .authorities(new ArrayList<>())
                         .build();
 
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+
                     logger.debug("Authentication successful for user: {}", username);
                     filterChain.doFilter(request, response);
                 } else {
-                    logger.warn("Token validation failed for user: {}", username);
+                    logger.warn("Token validation failed.");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Invalid or expired token");
+                    response.getWriter().write("Invalid or expired token.");
                 }
             } else {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Authentication failed");
+                response.getWriter().write("Authentication failed.");
             }
         } catch (Exception e) {
             logger.error("Error processing JWT token: {}", e.getMessage());
@@ -83,5 +102,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("Error processing token: " + e.getMessage());
         }
     }
+
 }
   
