@@ -52,7 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/usercontrol/top-users") ||
                 path.startsWith("/usercontrol/user-rank") ||
                 path.startsWith("/usercontrol/user-pics") ||
-                path.startsWith("/usercontrol/") && request.getMethod().equals("GET")) {
+                path.startsWith("/usercontrol/") && request.getMethod().equals("GET") ||
+                path.contains("/messages")) {
                 filterChain.doFilter(request, response);
                 return;
             }

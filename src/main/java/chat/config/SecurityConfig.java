@@ -34,7 +34,8 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().permitAll()  // ✅ Allow all endpoints without authentication
+                .requestMatchers("/chat/**", "/ws/**").permitAll() // Allow WebSocket and chat endpoints
+                .anyRequest().permitAll()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -51,7 +52,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
             "http://localhost:5173",
             "https://asliengineers.vercel.app",
-            "https://www.asliengineers.com"
+            "https://www.asliengineers.com",
+            "https://asliengineers.com"
         ));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
