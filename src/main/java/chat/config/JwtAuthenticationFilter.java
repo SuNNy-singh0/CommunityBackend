@@ -36,11 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getRequestURI();
 
-            // ✅ Skip filter for everything EXCEPT /rooms/login
-            if (!path.startsWith("/rooms/login")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+          
 
             final String authHeader = request.getHeader("Authorization");
             logger.debug("Auth header: {}", authHeader);
