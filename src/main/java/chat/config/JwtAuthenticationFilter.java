@@ -34,18 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
-            String path = request.getRequestURI();
-
-         // ✅ Skip JWT check for login and public endpoints
-            if (path.startsWith("/rooms/login") ||
-                path.startsWith("/rooms/createUser") ||
-                path.startsWith("/rooms/checkUsername") ||
-                path.startsWith("/community/records") ||
-                path.startsWith("/event/all")) {
-
-                filterChain.doFilter(request, response);
-                return;
-            }
+            // Permit all requests, as per SecurityConfig
+            filterChain.doFilter(request, response);
+            return;
 
 
             final String authHeader = request.getHeader("Authorization");
