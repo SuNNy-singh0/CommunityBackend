@@ -34,16 +34,16 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/rooms/login").authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().permitAll()  // ✅ Allow all endpoints without authentication
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            );
+            // 🔴 DO NOT add jwtAuthFilter if you want no token checks
 
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

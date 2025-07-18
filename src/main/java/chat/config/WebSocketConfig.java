@@ -16,8 +16,14 @@ public void configureMessageBroker(MessageBrokerRegistry config) {
 	config.setApplicationDestinationPrefixes("/app");
 }
 @Override
-	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		// TODO Auto-generated method stub
-		registry.addEndpoint("/chat").setAllowedOrigins("http://localhost:5173/").withSockJS();
-	}
+public void registerStompEndpoints(StompEndpointRegistry registry) {
+    registry.addEndpoint("/chat")
+        .setAllowedOrigins(
+            "http://localhost:5173",
+            "https://asliengineers.vercel.app",
+            "https://asliengineers.com",
+            "https://www.asliengineers.com"
+        )
+        .withSockJS();
+}
 }
