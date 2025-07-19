@@ -35,7 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String path = request.getRequestURI();
-
+       	 if (path.startsWith("/chat")) { // <--- CRITICAL: Exclude all WebSocket/STOMP paths
+             logger.debug("Skipping JWT authentication for WebSocket path: {}", path);
+             filterChain.doFilter(request, response);
+             return;
+         }
             // ✅ Skip JWT check for public endpoints
             if (path.startsWith("/rooms/login") ||
                 path.startsWith("/rooms/createUser") ||
