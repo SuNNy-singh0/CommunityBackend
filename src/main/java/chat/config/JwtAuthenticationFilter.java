@@ -49,7 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.startsWith("/jobs/find-by-skills") ||
                 path.startsWith("/jobs/filter-by-date") ||
                 path.startsWith("/mcq/all") ||
+                path.startsWith("/mcq/attempt") ||
                 path.startsWith("/mcq/daily") ||
+                path.startsWith("/mcq/upload") ||
                 path.startsWith("/usercontrol/top-users") ||
                 path.startsWith("/usercontrol/user-rank") ||
                 path.startsWith("/usercontrol/user-pics") ||
