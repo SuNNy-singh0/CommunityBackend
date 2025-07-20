@@ -37,12 +37,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String path = request.getRequestURI();
        	
             // ✅ Skip JWT check for public endpoints
-            if (path.startsWith("/rooms/login") ||
+            if 
+           ( path.equals("/") || // The root URL (your homepage)
+            path.equals("/index.html") || // Explicit index.html access
+            path.startsWith("/static/") || // Common static asset folder (e.g., from Vite/CRA build)
+            path.matches(".*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webmanifest|json)$") || // Match common static file extensions
+            path.startsWith("/images/") || // If you have a dedicated images folder
+            path.startsWith("/fonts/") || // If you have a dedicated fonts folder
+            path.startsWith("/vite.svg") || // Vite default icon (if still in public)
+            path.startsWith("/favicon.ico") || // Your main favicon
+            path.startsWith("/apple-touch-icon.png") || // Apple touch icon
+            path.startsWith("/site.webmanifest") || // Web manifest file
+            path.startsWith("/logo.png") ||
+            path.startsWith("/rooms/login") ||
             	path.startsWith("/chat")||
                 path.startsWith("/rooms/createUser") ||
                 path.startsWith("/rooms/reset-password") ||
                 path.startsWith("/rooms/alluser") ||
                 path.startsWith("/event/all") ||
+                path.startsWith("/event/create") ||
                 path.startsWith("/contests/all") ||
                 path.startsWith("/community/records") ||
                 path.startsWith("/jobs/all") ||
