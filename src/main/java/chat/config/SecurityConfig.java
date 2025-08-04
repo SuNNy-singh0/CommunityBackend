@@ -40,7 +40,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
-            // 🔴 DO NOT add jwtAuthFilter if you want no token checks
+           
 
         return http.build();
     }
