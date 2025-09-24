@@ -28,6 +28,7 @@ public class CommunityController {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    
 
     @Autowired
     private MongoMappingContext mongoMappingContext;
@@ -53,7 +54,7 @@ public class CommunityController {
                 communityRecordRepository.deleteById(savedRecord.getId());
             }
         } catch (Exception e) {
-            // Ignore initialization errors
+           
         }
     }
 
